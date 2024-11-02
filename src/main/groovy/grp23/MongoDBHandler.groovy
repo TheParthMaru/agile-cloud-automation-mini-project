@@ -7,5 +7,33 @@ import com.mongodb.client.MongoCollection
 import org.bson.Document
 
 class MongoDBHandler{
-	
+	def client
+	MongoDatabase database
+
+	// Constructor to initialize the MongoDB connection
+	MongoDBHandler(String connectionString, String dbName) {
+		client = MongoClients.create(connectionString)
+		database = client.getDatabase(dbName)
+		println "Connected to MongoDB database: $dbName"
+	}
+
+	// Method to create a collection
+	void createCollection(String collectionName) {
+		database.createCollection(collectionName)
+		println "Collection created: $collectionName"
+	}
+
+	// Method to insert a sample document into a collection
+	void insertDocument(String collectionName, Map<String, Object> documentData) {
+		MongoCollection<Document> collection = database.getCollection(collectionName)
+		Document document = new Document(documentData)
+		collection.insertOne(document)
+		println "Document inserted into $collectionName: $documentData"
+	}
+
+	// Method to close the MongoDB connection
+	void close() {
+		client?.close()
+		println "MongoDB connection closed"
+	}
 }
