@@ -19,9 +19,6 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
-// To supress some unwanted JDK related warnings
-tasks.withType(JavaExec) {
-    jvmArgs = ['-XX:+UnlockDiagnosticVMOptions', '-XX:-UseArchivedNonSystemClasses']
-}
+
 
 
