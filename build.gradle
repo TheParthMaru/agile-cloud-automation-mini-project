@@ -10,6 +10,18 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.mongodb:mongodb-driver-sync:4.10.1' 
-	implementation 'org.codehaus.groovy:groovy-json:3.0.9'
+    implementation 'org.mongodb:mongodb-driver-sync:4.10.1' 
+    implementation 'org.codehaus.groovy:groovy-json:3.0.9'
 }
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+// To supress some unwanted JDK related warnings
+tasks.withType(JavaExec) {
+    jvmArgs = ['-XX:+UnlockDiagnosticVMOptions', '-XX:-UseArchivedNonSystemClasses']
+}
+
+
