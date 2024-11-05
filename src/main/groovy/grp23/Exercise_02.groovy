@@ -23,11 +23,11 @@ def jsonData = 	new JsonSlurper().parse(datasetFile)
  */
 
 // Traditional approach
-//def selectionData = [:]
-//selectionData = jsonData[0]
-//println "DATA SELECTION"
-//println "First student data"
-//println JsonOutput.prettyPrint(JsonOutput.toJson(selectionData))
+def selectionData = [:]
+selectionData = jsonData[0]
+println "DATA SELECTION"
+println "First student data"
+println JsonOutput.prettyPrint(JsonOutput.toJson(selectionData))
 
 // Using groovy collections
 def selectedData = jsonData.first()
@@ -56,29 +56,29 @@ println ""
  * 2. For example, lets filter out data such that we only select the females that have math score > 95 with a bachelor's degree
  */
 
-// Traditional Approach without using groovy collections
-//def filteredData = []
-//
-//for(int i = 0; i < jsonData.size(); i++) {
-//	// Each iteration will be a map
-//	// Creating an empty map
-//	def studentData = [:]
-//	studentData = jsonData[i];
-//	if(studentData['math score'] > 95 && studentData['gender'] == "female" && studentData['parental level of education'] == "bachelor's degree") {
-//		// Applying Data Projection as well
-//		def currData = [gender: studentData.gender, mathScore: studentData['math score'], educationLevel: studentData['parental level of education']]
-//		filteredData << currData
-//	}
-//}
-//println "DATA FILTERING"
-//filteredData.eachWithIndex { student, index ->
-//	println "Student ${index + 1}"
-//	println JsonOutput.prettyPrint(JsonOutput.toJson(student))
-//}
-//println ""
+// Traditional Approach without using Groovy collections
+def filteredData1 = []
+
+for(int i = 0; i < jsonData.size(); i++) {
+	// Each iteration will be a map
+	// Creating an empty map
+	def studentData = [:]
+	studentData = jsonData[i];
+	if(studentData['math score'] > 95 && studentData['gender'] == "female" && studentData['parental level of education'] == "bachelor's degree") {
+		// Applying Data Projection as well
+		def currData = [gender: studentData.gender, mathScore: studentData['math score'], educationLevel: studentData['parental level of education']]
+		filteredData1 << currData
+	}
+}
+println "DATA FILTERING"
+filteredData1.eachWithIndex { student, index ->
+	println "Student ${index + 1}"
+	println JsonOutput.prettyPrint(JsonOutput.toJson(student))
+}
+println ""
 
 // Using groovy collections
-def filteredData = jsonData.findAll { studentData ->
+def filteredData2 = jsonData.findAll { studentData ->
 	studentData['math score'] > 95 &&
 	studentData['gender'] == "female" &&
 	studentData['parental level of education'] == "bachelor's degree"
@@ -88,7 +88,7 @@ def filteredData = jsonData.findAll { studentData ->
 }
 
 println "DATA FILTERING"
-filteredData.eachWithIndex { student, index ->
+filteredData2.eachWithIndex { student, index ->
 	println "Student ${index + 1}"
 	println JsonOutput.prettyPrint(JsonOutput.toJson(student))
 }
