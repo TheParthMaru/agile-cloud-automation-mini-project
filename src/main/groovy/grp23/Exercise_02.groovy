@@ -25,15 +25,17 @@ def jsonData = 	new JsonSlurper().parse(datasetFile)
 // Traditional approach
 def selectionData = [:]
 selectionData = jsonData[0]
-println "DATA SELECTION"
+println "--- DATA SELECTION WITHOUT GROOVY COLLECTION -- \n"
 println "First student data"
 println JsonOutput.prettyPrint(JsonOutput.toJson(selectionData))
+println "\n"
 
 // Using groovy collections
 def selectedData = jsonData.first()
-println "DATA SELECTION"
+println "--- DATA SELECTION WITH GROOVY COLLECTION -- \n"
 println "First student data"
 println JsonOutput.prettyPrint(JsonOutput.toJson(selectedData))
+println "\n"
 
 /**
  * Data Projection:
@@ -44,10 +46,18 @@ println JsonOutput.prettyPrint(JsonOutput.toJson(selectedData))
 // Traditional approach
 def myData = jsonData[0]
 def projectionData = [gender: myData.gender, mathScore: myData['math score']]
-println "DATA PROJECTION"
+println "DATA PROJECTION WITHOUT GROOVY COLLECTION"
 println "First student data"
 println projectionData
-println ""
+println "\n"
+
+
+// Using Groovy collections
+def projectedData = jsonData.first().subMap(['gender', 'math score'])
+println "--- DATA PROJECTION WITH GROOVY COLLECTION -- \n"
+println "First student data"
+println JsonOutput.prettyPrint(JsonOutput.toJson(projectedData))
+println "\n"
 
 
 /**
@@ -70,12 +80,12 @@ for(int i = 0; i < jsonData.size(); i++) {
 		filteredData1 << currData
 	}
 }
-println "DATA FILTERING"
+println "DATA FILTERING WITHOUT GROOVY COLLECTION"
 filteredData1.eachWithIndex { student, index ->
 	println "Student ${index + 1}"
 	println JsonOutput.prettyPrint(JsonOutput.toJson(student))
 }
-println ""
+println "\n"
 
 // Using groovy collections
 def filteredData2 = jsonData.findAll { studentData ->
@@ -87,12 +97,12 @@ def filteredData2 = jsonData.findAll { studentData ->
 	[gender: studentData.gender, mathScore: studentData['math score'], educationLevel: studentData['parental level of education']]
 }
 
-println "DATA FILTERING"
+println "DATA FILTERING WITH GROOVY COLLECTION"
 filteredData2.eachWithIndex { student, index ->
 	println "Student ${index + 1}"
 	println JsonOutput.prettyPrint(JsonOutput.toJson(student))
 }
-println ""
+println "\n"
 
 /**
  * Data Combination:
@@ -100,11 +110,27 @@ println ""
  * 2. For example, find the average math score of all the students
  */
 
+// Using traditional approach
+def totalMathScores = 0
+def count = 0
+
+for (int i = 0; i < jsonData.size(); i++) {
+	def studentData = jsonData[i]
+	totalMathScores += studentData['math score']
+	count++
+}
+
+def averageScore = totalMathScores / count
+println "DATA COMBINATION WITHOUT GROOVY COLLECTION"
+println "Average Math Score -> $averageScore"
+println ""
+
+// Using groovy collection
 def mathScores = jsonData.collect {it['math score']}
 def totMathScores = mathScores.sum();
 
 def avgScore = totMathScores / mathScores.size()
-println "DATA COMBINATION"
+println "DATA COMBINATION WITH GROOVY COLLECTION"
 println "Average Math Score -> $avgScore"
 println ""
 
@@ -114,13 +140,45 @@ println ""
  * 2. For example, find the average math score of all the students and group them by males and females
  */
 
+// Traditional approach
+def maleScores = []
+def femaleScores = []
+
+for (int i = 0; i < jsonData.size(); i++) {
+	def studentData = jsonData[i]
+	def gender = studentData['gender']
+	def mathScore = studentData['math score']
+
+	if (gender == "male") {
+		maleScores.add(mathScore)
+	} else if (gender == "female") {
+		femaleScores.add(mathScore)
+	}
+}
+
+// Calculate average math score for each gender
+def maleTotal = 0
+maleScores.each { maleTotal += it }
+def maleAvg = maleScores.size() > 0 ? maleTotal / maleScores.size() : 0
+
+def femaleTotal = 0
+femaleScores.each { femaleTotal += it }
+def femaleAvg = femaleScores.size() > 0 ? femaleTotal / femaleScores.size() : 0
+
+println "DATA GROUPING WITHOUT GROOVY COLLECTION"
+println "Average Math Score for female: ${femaleAvg}"
+println "Average Math Score for male: ${maleAvg}"
+println ""
+
+
+// Using groovy collection
 def scoresGender = jsonData.groupBy { it['gender'] }
-println "DATA GROUPING"
+println "DATA GROUPING WITH GROOVY COLLECTION"
 // Calculate average math score for each gender
 scoresGender.each { gender, students ->
 	def mathsScores = students.collect {it['math score']}
 	def totalScore = mathsScores.sum()
-	def averageScore = totalScore / students.size()
-	println "Average Math Score for ${gender}: ${averageScore}"
+	def avgScore1 = totalScore / students.size()
+	println "Average Math Score for ${gender}: ${avgScore1}"
 }
 println ""
