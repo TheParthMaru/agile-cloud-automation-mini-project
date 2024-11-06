@@ -42,13 +42,14 @@ def resultList2 = collection.aggregate([
         avg('avgWritingScore', '$writing score')
     ),
     project(fields(
-        include('avgMathScore', 'avgReadingScore', 'avgWritingScore'), // Include averages
-        include('_id') // Include the _id field (which contains the gender)
+        include('avgMathScore', 'avgReadingScore', 'avgWritingScore'), 
+        include('_id') 
     )),
-    sort(descending('avgMathScore')) // Sort by average math score in descending order
+    sort(descending('avgMathScore')) 
 ])
 
-// Rename the _id field to gender in the result because during grouping, gender was considered and the field value is lost
+// Rename the _id field to gender in the result because during grouping, 
+// gender was considered and the field value is lost
 // So we rename id to gender
 def finalResults = resultList2.map { doc ->
     doc.put('gender', doc.remove('_id'))
